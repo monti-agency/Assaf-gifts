@@ -375,15 +375,15 @@ const slug=/^[\w-]{1,40}$/.test(String(x.slug||""))?String(x.slug):id,opts={};
 if(x.opts&&typeof x.opts==="object")for(const[k,v]of Object.entries(x.opts))if(Array.isArray(v)&&!/[<>"'&]/.test(k+v.join("")))opts[k]=v.map(String);
 const n=Number(x.price);return{id,slug,cat:CATS[x.cat]?x.cat:"bq",name,tags:Array.isArray(x.tags)?x.tags.filter(t=>OCC[t]):[],img,price:x.price==null||x.price===""||!isFinite(n)||n<0?null:n,status:x.status==="out"?"out":"confirm",featured:!!x.featured,opts,desc:oaTxt(x.desc,600).trim()||OA_DESC}}
 function oaApply(rows){if(!Array.isArray(rows))return false;const by={};rows.forEach(r=>{if(r&&r.key)by[r.key]=r.value});let ch=false;
-const pv=by.oyoun_products;if(Array.isArray(pv)){const n=pv.map(oaClean).filter(Boolean);if(n.length||!pv.length){P.splice(0,P.length,...n);ch=true}}
-const s=by.oyoun_settings;if(s&&typeof s==="object"){const w=String(s.wa||"").replace(/\D/g,""),g=String(s.ig||"").replace(/[^\w.]/g,"").slice(0,30);
+const pv=by.assaf_products;if(Array.isArray(pv)){const n=pv.map(oaClean).filter(Boolean);if(n.length||!pv.length){P.splice(0,P.length,...n);ch=true}}
+const s=by.assaf_settings;if(s&&typeof s==="object"){const w=String(s.wa||"").replace(/\D/g,""),g=String(s.ig||"").replace(/[^\w.]/g,"").slice(0,30);
 if(typeof s.ann==="string")CFG.ann=s.ann.slice(0,140);if(/^[1-9]\d{9,14}$/.test(w))CFG.wa=w;if(g)CFG.ig=g;ch=true}
 cart=cart.filter(c=>P.some(p=>p.id===c.id));return ch}
 function oaDom(){$("#ann").textContent=CFG.ann;const m=wa("السلام عليكم، أرغب بالاستفسار");$("#fcta").href=m;$("#wab").href=m;
 $$(".ft a[href*='wa.me']").forEach(a=>a.href=m);$$("#lk a[target],#mn a[target]").forEach(a=>a.href=m);
 const f=CFG.wa.replace(/^966(\d{2})(\d{3})(\d{4})$/,"+966 $1 $2 $3"),t=$(".ft-contact a[href*='wa.me'] .lt");if(t)t.textContent=f[0]==="+"?f:"+"+CFG.wa;
 $$(".ft a[href*='instagram.com']").forEach(a=>a.href="https://www.instagram.com/"+CFG.ig+"/");const g=$(".ft-contact a[href*='instagram.com'] .lt");if(g)g.textContent="@"+CFG.ig}
-async function oaSync(){if(!OA_ON)return;try{const r=await fetch(OA.url.replace(/\/+$/,"")+"/rest/v1/site_data?key=in.(oyoun_products,oyoun_settings)&select=key,value",{headers:{apikey:OA.anonKey,Authorization:"Bearer "+OA.anonKey},cache:"no-store"});if(!r.ok)return;
+async function oaSync(){if(!OA_ON)return;try{const r=await fetch(OA.url.replace(/\/+$/,"")+"/rest/v1/site_data?key=in.(assaf_products,assaf_settings)&select=key,value",{headers:{apikey:OA.anonKey,Authorization:"Bearer "+OA.anonKey},cache:"no-store"});if(!r.ok)return;
 const rows=await r.json();if(!Array.isArray(rows))return;rows.sort((a,b)=>a.key<b.key?-1:1);const t=JSON.stringify(rows);let old="";try{old=localStorage.getItem(OA_KEY)||""}catch(e){}if(t===old)return;
 const ch=oaApply(rows);try{localStorage.setItem(OA_KEY,t)}catch(e){}
 if(ch){oaDom();upd();const y=scrollY,el=document.activeElement;if(!(el&&/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))){route();scrollTo(0,y)}}}catch(e){}}
